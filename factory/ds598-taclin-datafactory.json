@@ -1,0 +1,9 @@
+{
+	"name": "ds598-taclin-datafactory",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a96eb91d-88d2-47de-abeb-63864155af64",
+		"tenantId": "d57d32cc-c121-488f-b07b-dfe705680c71"
+	}
+}
