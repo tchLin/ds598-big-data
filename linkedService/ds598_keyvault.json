@@ -1,0 +1,10 @@
+{
+	"name": "ds598_keyvault",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://openweatherAPI-taclin.vault.azure.net/"
+		}
+	}
+}
