@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "ds598-taclin-datafactory"
+		},
+		"DS598_Github_credential": {
+			"value": ""
+		},
+		"ds598_datalake_accountKey": {
+			"value": ""
+		},
+		"DS598_Github_properties_typeProperties_username": {
+			"value": "tchLin"
+		},
+		"ds598_datalake_properties_typeProperties_url": {
+			"value": "https://ds598taclin.dfs.core.windows.net/"
+		},
+		"ds598_keyvault_properties_typeProperties_baseUrl": {
+			"value": "https://openweatherAPI-taclin.vault.azure.net/"
+		},
+		"openweatherAPI_airPollution_properties_typeProperties_url": {
+			"value": "http://api.openweathermap.org"
+		},
+		"openweatherAPI_weather_properties_typeProperties_url": {
+			"value": "https://history.openweathermap.org/data/2.5/history/city"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
