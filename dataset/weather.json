@@ -9,7 +9,7 @@
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "data/2.5/history/city?lat={lat}&lon={lon}&type={hour}&start={start}&end={end}&appid={APIKEY}",
+				"value": "?lat=42.36&lon=-71.05&type=hour&start=@div(sub(ticks(addDay(utcNow(), mul(-7, sub(item(), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)&end=@div(sub(ticks(addDays(utcNow(), mul(-7, sub(item(), 1), 6))), ticks('1970-01-01T00:00:00Z')), 10000000)&appid=@activity('key_vault_connector').output.value",
 				"type": "Expression"
 			}
 		},
