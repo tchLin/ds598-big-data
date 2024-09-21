@@ -6,18 +6,30 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"start": {
+			"appid": {
 				"type": "string"
 			},
-			"end": {
+			"lat": {
+				"type": "float"
+			},
+			"lon": {
+				"type": "float"
+			},
+			"dataType": {
 				"type": "string"
+			},
+			"start": {
+				"type": "int"
+			},
+			"end": {
+				"type": "int"
 			}
 		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "?lat=42.36&lon=-71.05&type=hour&start=@dataset().start&end=@dataset().end&appid=a7247f43d9fb3de139633eb55f61b207",
+				"value": "/data/2.5/history/city?lat=@{dataset().lat}&lon=@{dataset().lon}&type=@{dataset().dataType}&start=@{dataset().start}&end=@{dataset().end}&appid=@{dataset().appid}",
 				"type": "Expression"
 			}
 		},

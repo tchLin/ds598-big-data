@@ -6,15 +6,30 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"apiKey": {
+			"appid": {
 				"type": "string"
+			},
+			"lat": {
+				"type": "float"
+			},
+			"lon": {
+				"type": "float"
+			},
+			"dataType": {
+				"type": "string"
+			},
+			"start": {
+				"type": "int"
+			},
+			"end": {
+				"type": "int"
 			}
 		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "/data/2.5/air_pollution?lat=42.36&lon=-71.05&appid=@dataset().apiKey",
+				"value": "/data/2.5/air_pollution/history?lat=@{dataset().lat}&lon=@{dataset().lon}&type=@{dataset().dataType}&start=@{dataset().start}&end=@{dataset().end}&appid=@{dataset().appid}",
 				"type": "Expression"
 			}
 		},

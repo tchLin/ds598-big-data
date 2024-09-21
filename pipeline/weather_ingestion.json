@@ -83,11 +83,21 @@
 									"referenceName": "weather",
 									"type": "DatasetReference",
 									"parameters": {
-										"start": {
-											"value": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(item(), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)",
+										"appid": {
+											"value": "@activity('key_vault_connector').output.value",
 											"type": "Expression"
 										},
-										"end": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(item(), 1), 6))), ticks('1970-01-01T00:00:00Z')), 10000000)"
+										"lat": 42.36,
+										"lon": -71.05,
+										"dataType": "hour",
+										"start": {
+											"value": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(int(item()), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)\n",
+											"type": "Expression"
+										},
+										"end": {
+											"value": "@div(sub(ticks(addDays(utcNow(), add(mul(-7, sub(int(item()), 1)), 6))), ticks('1970-01-01T00:00:00Z')), 10000000)\n",
+											"type": "Expression"
+										}
 									}
 								}
 							],
@@ -99,23 +109,6 @@
 							]
 						}
 					]
-				}
-			},
-			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "test",
-					"value": {
-						"value": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(1, 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)",
-						"type": "Expression"
-					}
 				}
 			}
 		],

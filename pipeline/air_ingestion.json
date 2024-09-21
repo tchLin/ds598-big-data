@@ -71,8 +71,19 @@
 						"referenceName": "air",
 						"type": "DatasetReference",
 						"parameters": {
-							"apiKey": {
+							"appid": {
 								"value": "@activity('key_vault_connector').output.value",
+								"type": "Expression"
+							},
+							"lat": 42.36,
+							"lon": -71.05,
+							"dataType": "hour",
+							"start": {
+								"value": "@div(sub(ticks(addDays(utcNow(), -365)), ticks('1970-01-01T00:00:00Z')), 10000000)\n",
+								"type": "Expression"
+							},
+							"end": {
+								"value": "@div(sub(ticks(utcNow()), ticks('1970-01-01T00:00:00Z')), 10000000)\n",
 								"type": "Expression"
 							}
 						}
