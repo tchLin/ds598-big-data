@@ -36,6 +36,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "1",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "copyAirData",
