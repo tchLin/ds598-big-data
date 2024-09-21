@@ -74,6 +74,8 @@
 					{
 						"name": "ingest_air_data",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "key_vault_connector",
@@ -146,7 +148,10 @@
 						"userProperties": [],
 						"typeProperties": {
 							"variableName": "test",
-							"value": "@activity('key_vault_connector').output.value"
+							"value": {
+								"value": "@activity('key_vault_connector').output.value",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -274,30 +279,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/air_bronze_result')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ds598_datalake",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "Bronze/air-pollution",
-						"fileSystem": "ds598blob"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ds598_datalake')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/air')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -323,6 +304,30 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/openweatherAPI_airPollution')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/air_bronze_result')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ds598_datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "Bronze/air-pollution",
+						"fileSystem": "ds598blob"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ds598_datalake')]"
 			]
 		},
 		{
