@@ -69,7 +69,10 @@
 				"inputs": [
 					{
 						"referenceName": "air",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"API_KEY": "@activity('key_vault_connector').output.value"
+						}
 					}
 				],
 				"outputs": [
