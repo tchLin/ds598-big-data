@@ -1,0 +1,19 @@
+{
+	"name": "weather_bronze_result",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ds598_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Bronze/weather",
+				"fileSystem": "ds598blob"
+			}
+		},
+		"schema": {}
+	}
+}

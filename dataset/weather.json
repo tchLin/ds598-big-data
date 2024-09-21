@@ -5,8 +5,34 @@
 			"referenceName": "openweatherAPI_weather",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"lat": {
+				"type": "float"
+			},
+			"lon": {
+				"type": "float"
+			},
+			"start": {
+				"type": "string"
+			},
+			"end": {
+				"type": "string"
+			},
+			"appid": {
+				"type": "string"
+			},
+			"datatype": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "data/2.5/history/city?lat=@{dataset().lat}&lon=@{dataset().lon}&type=@{dataset().dataType}&start=@{dataset().start}&end=@{dataset().end}&appid=@{dataset().appid}\n",
+				"type": "Expression"
+			}
+		},
 		"schema": []
 	}
 }
