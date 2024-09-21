@@ -69,13 +69,7 @@
 				"inputs": [
 					{
 						"referenceName": "air",
-						"type": "DatasetReference",
-						"parameters": {
-							"API_KEY": {
-								"value": "@activity('key_vault_connector').output.value",
-								"type": "Expression"
-							}
-						}
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
@@ -84,8 +78,37 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "test_output",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "key_vault_connector",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@activity('key_vault_connector').output.value",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"variables": {
+			"test": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }

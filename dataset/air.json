@@ -14,7 +14,7 @@
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "/data/2.5/air_pollution?lat=42.36&lon=-71.05&appid=dataset().API_KEY",
+				"value": "/data/2.5/air_pollution?lat=42.36&lon=-71.05&appid=@dataset().API_KEY",
 				"type": "Expression"
 			}
 		},
