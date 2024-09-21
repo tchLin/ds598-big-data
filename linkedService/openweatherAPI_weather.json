@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://history.openweathermap.org/data/2.5/history/city",
+			"url": "https://history.openweathermap.org",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
