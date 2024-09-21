@@ -5,15 +5,6 @@
 			"referenceName": "ds598_datalake",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"start": {
-				"type": "int"
-			},
-			"end": {
-				"type": "int",
-				"defaultValue": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(item(), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)"
-			}
-		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
