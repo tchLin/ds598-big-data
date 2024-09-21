@@ -1,5 +1,5 @@
 {
-	"name": "Json1",
+	"name": "air_bronze_result",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ds598_datalake",
