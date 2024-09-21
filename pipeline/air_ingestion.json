@@ -1,5 +1,5 @@
 {
-	"name": "weather_ingestion",
+	"name": "air_ingestion",
 	"properties": {
 		"activities": [
 			{
@@ -24,7 +24,7 @@
 				}
 			},
 			{
-				"name": "ingest_weather",
+				"name": "ingest_air_pollution",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -36,13 +36,9 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"items": {
-						"value": "@range(1,52)",
-						"type": "Expression"
-					},
 					"activities": [
 						{
-							"name": "CopyWeatherData",
+							"name": "copyAirData",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -76,13 +72,13 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "weather",
+									"referenceName": "air",
 									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "weather_bronze_result",
+									"referenceName": "Json1",
 									"type": "DatasetReference"
 								}
 							]
