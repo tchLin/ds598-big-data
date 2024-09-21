@@ -37,7 +37,7 @@
 		},
 		"openweatherAPI_weather_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://history.openweathermap.org/data/2.5/history/city"
+			"defaultValue": "https://history.openweathermap.org"
 		},
 		"containerUri": {
 			"type": "string",

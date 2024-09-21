@@ -37,7 +37,7 @@
 		},
 		"openweatherAPI_weather_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://history.openweathermap.org/data/2.5/history/city"
+			"defaultValue": "https://history.openweathermap.org"
 		}
 	},
 	"variables": {
@@ -120,8 +120,19 @@
 								"referenceName": "air",
 								"type": "DatasetReference",
 								"parameters": {
-									"apiKey": {
+									"appid": {
 										"value": "@activity('key_vault_connector').output.value",
+										"type": "Expression"
+									},
+									"lat": 42.36,
+									"lon": -71.05,
+									"dataType": "hour",
+									"start": {
+										"value": "@div(sub(ticks(addDays(utcNow(), -365)), ticks('1970-01-01T00:00:00Z')), 10000000)\n",
+										"type": "Expression"
+									},
+									"end": {
+										"value": "@div(sub(ticks(utcNow()), ticks('1970-01-01T00:00:00Z')), 10000000)\n",
 										"type": "Expression"
 									}
 								}
@@ -160,8 +171,6 @@
 					{
 						"name": "key_vault_connector",
 						"type": "WebActivity",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -184,8 +193,6 @@
 					{
 						"name": "ingest_weather",
 						"type": "ForEach",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "key_vault_connector",
@@ -239,11 +246,21 @@
 											"referenceName": "weather",
 											"type": "DatasetReference",
 											"parameters": {
-												"start": {
-													"value": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(item(), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)",
+												"appid": {
+													"value": "@activity('key_vault_connector').output.value",
 													"type": "Expression"
 												},
-												"end": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(item(), 1), 6))), ticks('1970-01-01T00:00:00Z')), 10000000)"
+												"lat": 42.36,
+												"lon": -71.05,
+												"dataType": "hour",
+												"start": {
+													"value": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(int(item()), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)\n",
+													"type": "Expression"
+												},
+												"end": {
+													"value": "@div(sub(ticks(addDays(utcNow(), add(mul(-7, sub(int(item()), 1)), 6))), ticks('1970-01-01T00:00:00Z')), 10000000)\n",
+													"type": "Expression"
+												}
 											}
 										}
 									],
@@ -256,23 +273,6 @@
 									]
 								}
 							]
-						}
-					},
-					{
-						"name": "Set variable1",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "test",
-							"value": {
-								"value": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(1, 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)",
-								"type": "Expression"
-							}
 						}
 					}
 				],
@@ -301,15 +301,30 @@
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"apiKey": {
+					"appid": {
 						"type": "string"
+					},
+					"lat": {
+						"type": "float"
+					},
+					"lon": {
+						"type": "float"
+					},
+					"dataType": {
+						"type": "string"
+					},
+					"start": {
+						"type": "int"
+					},
+					"end": {
+						"type": "int"
 					}
 				},
 				"annotations": [],
 				"type": "RestResource",
 				"typeProperties": {
 					"relativeUrl": {
-						"value": "/data/2.5/air_pollution?lat=42.36&lon=-71.05&appid=@dataset().apiKey",
+						"value": "/data/2.5/air_pollution/history?lat=@{dataset().lat}&lon=@{dataset().lon}&type=@{dataset().dataType}&start=@{dataset().start}&end=@{dataset().end}&appid=@{dataset().appid}",
 						"type": "Expression"
 					}
 				},
@@ -353,18 +368,30 @@
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"start": {
+					"appid": {
 						"type": "string"
 					},
-					"end": {
+					"lat": {
+						"type": "float"
+					},
+					"lon": {
+						"type": "float"
+					},
+					"dataType": {
 						"type": "string"
+					},
+					"start": {
+						"type": "int"
+					},
+					"end": {
+						"type": "int"
 					}
 				},
 				"annotations": [],
 				"type": "RestResource",
 				"typeProperties": {
 					"relativeUrl": {
-						"value": "?lat=42.36&lon=-71.05&type=hour&start=@dataset().start&end=@dataset().end&appid=a7247f43d9fb3de139633eb55f61b207",
+						"value": "/data/2.5/history/city?lat=@{dataset().lat}&lon=@{dataset().lon}&type=@{dataset().dataType}&start=@{dataset().start}&end=@{dataset().end}&appid=@{dataset().appid}",
 						"type": "Expression"
 					}
 				},

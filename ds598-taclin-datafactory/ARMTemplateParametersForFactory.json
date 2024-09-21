@@ -27,7 +27,7 @@
 			"value": "http://api.openweathermap.org"
 		},
 		"openweatherAPI_weather_properties_typeProperties_url": {
-			"value": "https://history.openweathermap.org/data/2.5/history/city"
+			"value": "https://history.openweathermap.org"
 		}
 	}
 }
