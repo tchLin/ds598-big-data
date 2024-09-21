@@ -139,7 +139,7 @@
 						"typeProperties": {
 							"method": "GET",
 							"headers": {},
-							"url": "https://openweatherAPI-taclin/secrets/OpenWeatherAPIKey?api-version=7.0",
+							"url": "https://openweatherAPI-taclin.vault.azure.net/secrets/openweatherAPI-key?api-version=7.0",
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
