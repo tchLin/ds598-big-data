@@ -29,6 +29,8 @@
 			{
 				"name": "ingest_air_data",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "key_vault_connector",
