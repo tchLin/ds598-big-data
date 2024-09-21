@@ -5,6 +5,8 @@
 			{
 				"name": "key_vault_connector",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -26,6 +28,8 @@
 			{
 				"name": "ingest_weather",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "key_vault_connector",
@@ -77,7 +81,14 @@
 							"inputs": [
 								{
 									"referenceName": "weather",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"start": {
+											"value": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(item(), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)",
+											"type": "Expression"
+										},
+										"end": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(item(), 1), 6))), ticks('1970-01-01T00:00:00Z')), 10000000)"
+									}
 								}
 							],
 							"outputs": [
@@ -89,8 +100,30 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(1, 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"variables": {
+			"test": {
+				"type": "Integer"
+			}
+		},
 		"annotations": []
 	}
 }

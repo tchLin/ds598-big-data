@@ -29,8 +29,6 @@
 			{
 				"name": "ingest_air_data",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "key_vault_connector",
@@ -73,7 +71,10 @@
 						"referenceName": "air",
 						"type": "DatasetReference",
 						"parameters": {
-							"API_KEY": "@activity('key_vault_connector').output.value"
+							"apiKey": {
+								"value": "@activity('key_vault_connector').output.value",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -83,32 +84,11 @@
 						"type": "DatasetReference"
 					}
 				]
-			},
-			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "key_vault_connector",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "test",
-					"value": "@activity('key_vault_connector').output.value"
-				}
 			}
 		],
 		"variables": {
 			"test": {
-				"type": "String"
+				"type": "Integer"
 			}
 		},
 		"annotations": []
