@@ -5,11 +5,16 @@
 			"referenceName": "openweatherAPI_airPollution",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"API_KEY": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "/data/2.5/air_pollution?lat=42.36&lon=-71.05&appid=@activity('key_vault_connector').output.value",
+				"value": "/data/2.5/air_pollution?lat=42.36&lon=-71.05&appid=dataset().API_KEY",
 				"type": "Expression"
 			}
 		},
