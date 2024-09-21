@@ -19,6 +19,10 @@
 			"type": "string",
 			"defaultValue": "tchLin"
 		},
+		"air_http_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://api.openweathermap.org"
+		},
 		"ds598_datalake_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://ds598taclin.dfs.core.windows.net/"
@@ -74,8 +78,6 @@
 					{
 						"name": "ingest_air_data",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "key_vault_connector",
@@ -118,7 +120,10 @@
 								"referenceName": "air",
 								"type": "DatasetReference",
 								"parameters": {
-									"API_KEY": "@activity('key_vault_connector').output.value"
+									"apiKey": {
+										"value": "@activity('key_vault_connector').output.value",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -129,30 +134,6 @@
 								"parameters": {}
 							}
 						]
-					},
-					{
-						"name": "Set variable1",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "key_vault_connector",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "test",
-							"value": {
-								"value": "@activity('key_vault_connector').output.value",
-								"type": "Expression"
-							}
-						}
 					}
 				],
 				"policy": {
@@ -160,7 +141,7 @@
 				},
 				"variables": {
 					"test": {
-						"type": "String"
+						"type": "Integer"
 					}
 				},
 				"annotations": []
@@ -179,6 +160,8 @@
 					{
 						"name": "key_vault_connector",
 						"type": "WebActivity",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -201,6 +184,8 @@
 					{
 						"name": "ingest_weather",
 						"type": "ForEach",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "key_vault_connector",
@@ -253,7 +238,13 @@
 										{
 											"referenceName": "weather",
 											"type": "DatasetReference",
-											"parameters": {}
+											"parameters": {
+												"start": {
+													"value": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(item(), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)",
+													"type": "Expression"
+												},
+												"end": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(item(), 1), 6))), ticks('1970-01-01T00:00:00Z')), 10000000)"
+											}
 										}
 									],
 									"outputs": [
@@ -266,10 +257,32 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "test",
+							"value": {
+								"value": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(1, 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"test": {
+						"type": "Integer"
+					}
 				},
 				"annotations": []
 			},
@@ -288,7 +301,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"API_KEY": {
+					"apiKey": {
 						"type": "string"
 					}
 				},
@@ -296,7 +309,7 @@
 				"type": "RestResource",
 				"typeProperties": {
 					"relativeUrl": {
-						"value": "/data/2.5/air_pollution?lat=42.36&lon=-71.05&appid=@dataset().API_KEY",
+						"value": "/data/2.5/air_pollution?lat=42.36&lon=-71.05&appid=@dataset().apiKey",
 						"type": "Expression"
 					}
 				},
@@ -339,11 +352,19 @@
 					"referenceName": "openweatherAPI_weather",
 					"type": "LinkedServiceReference"
 				},
+				"parameters": {
+					"start": {
+						"type": "string"
+					},
+					"end": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
 				"type": "RestResource",
 				"typeProperties": {
 					"relativeUrl": {
-						"value": "?lat=42.36&lon=-71.05&type=hour&start=@div(sub(ticks(addDay(utcNow(), mul(-7, sub(item(), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)&end=@div(sub(ticks(addDays(utcNow(), mul(-7, sub(item(), 1), 6))), ticks('1970-01-01T00:00:00Z')), 10000000)&appid=@activity('key_vault_connector').output.value",
+						"value": "?lat=42.36&lon=-71.05&type=hour&start=@dataset().start&end=@dataset().end&appid=a7247f43d9fb3de139633eb55f61b207",
 						"type": "Expression"
 					}
 				},
@@ -391,6 +412,21 @@
 						"value": "[parameters('DS598_Github_credential')]"
 					},
 					"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDg5OENFQzE4LTdBOTEtNDFCRi05MDczLTk3MDdBRDhDOTA4QV9hNmMwMWZiNi02M2E0LTQ4MmUtOWY4Yy02MGY3NTJjOTk3NDEiDQp9"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/air_http')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('air_http_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []

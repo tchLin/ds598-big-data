@@ -19,6 +19,10 @@
 			"type": "string",
 			"defaultValue": "tchLin"
 		},
+		"air_http_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://api.openweathermap.org"
+		},
 		"ds598_datalake_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://ds598taclin.dfs.core.windows.net/"
@@ -70,6 +74,9 @@
 					},
 					"DS598_Github_properties_typeProperties_username": {
 						"value": "[parameters('DS598_Github_properties_typeProperties_username')]"
+					},
+					"air_http_properties_typeProperties_url": {
+						"value": "[parameters('air_http_properties_typeProperties_url')]"
 					},
 					"ds598_datalake_properties_typeProperties_url": {
 						"value": "[parameters('ds598_datalake_properties_typeProperties_url')]"
