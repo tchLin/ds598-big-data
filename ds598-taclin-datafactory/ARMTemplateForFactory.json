@@ -129,7 +129,7 @@
 						]
 					},
 					{
-						"name": "test_output",
+						"name": "Set variable1",
 						"type": "SetVariable",
 						"dependsOn": [
 							{
@@ -146,10 +146,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"variableName": "test",
-							"value": {
-								"value": "@activity('key_vault_connector').output.value",
-								"type": "Expression"
-							}
+							"value": "@activity('key_vault_connector').output.value"
 						}
 					}
 				],
