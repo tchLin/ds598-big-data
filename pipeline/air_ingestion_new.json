@@ -1,5 +1,5 @@
 {
-	"name": "weather_ingestion",
+	"name": "air_ingestion_new",
 	"properties": {
 		"activities": [
 			{
@@ -24,7 +24,7 @@
 				}
 			},
 			{
-				"name": "ingest_weather",
+				"name": "ingest_air_pol",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -42,7 +42,7 @@
 					},
 					"activities": [
 						{
-							"name": "CopyWeatherData",
+							"name": "CopyAirData",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -76,30 +76,21 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "weather",
+									"referenceName": "air",
 									"type": "DatasetReference",
 									"parameters": {
-										"appid": {
-											"value": "@activity('key_vault_connector').output.value",
-											"type": "Expression"
-										},
+										"appid": "@activity('key_vault_connector').output.value",
 										"lat": 42.36,
 										"lon": -71.05,
 										"dataType": "hour",
-										"start": {
-											"value": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(int(item()), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)\n",
-											"type": "Expression"
-										},
-										"end": {
-											"value": "@div(sub(ticks(addDays(utcNow(), add(mul(-7, sub(int(item()), 1)), 6))), ticks('1970-01-01T00:00:00Z')), 10000000)\n",
-											"type": "Expression"
-										}
+										"start": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(int(item()), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)",
+										"end": "@div(sub(ticks(addDays(utcNow(), add(mul(-7, sub(int(item()), 1)), 6))), ticks('1970-01-01T00:00:00Z')), 10000000)"
 									}
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "weather_new",
+									"referenceName": "air_pol_new",
 									"type": "DatasetReference"
 								}
 							]
