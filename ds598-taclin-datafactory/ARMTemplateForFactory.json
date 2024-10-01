@@ -266,7 +266,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "weather_bronze_result",
+											"referenceName": "weather_new",
 											"type": "DatasetReference",
 											"parameters": {}
 										}
@@ -288,7 +288,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/weather')]",
-				"[concat(variables('factoryId'), '/datasets/weather_bronze_result')]"
+				"[concat(variables('factoryId'), '/datasets/weather_new')]"
 			]
 		},
 		{
@@ -517,6 +517,174 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/air_ingestion_new')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "key_vault_connector",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://openweatherAPI-taclin.vault.azure.net/secrets/openweatherAPI-key?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "ingest_air_pol",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "key_vault_connector",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@range(1,52)",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "CopyAirData",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "air",
+											"type": "DatasetReference",
+											"parameters": {
+												"appid": "@activity('key_vault_connector').output.value",
+												"lat": 42.36,
+												"lon": -71.05,
+												"dataType": "hour",
+												"start": "@div(sub(ticks(addDays(utcNow(), mul(-7, sub(int(item()), 1)))), ticks('1970-01-01T00:00:00Z')), 10000000)",
+												"end": "@div(sub(ticks(addDays(utcNow(), add(mul(-7, sub(int(item()), 1)), 6))), ticks('1970-01-01T00:00:00Z')), 10000000)"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "air_pol_new",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"test": {
+						"type": "Integer"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/air')]",
+				"[concat(variables('factoryId'), '/datasets/air_pol_new')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/weather_new')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ds598_datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "bronze/weather_new/historical",
+						"fileSystem": "ds598blob"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ds598_datalake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/air_pol_new')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ds598_datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "bronze/air_pol_new/historical",
+						"fileSystem": "ds598blob"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ds598_datalake')]"
+			]
 		}
 	]
 }
