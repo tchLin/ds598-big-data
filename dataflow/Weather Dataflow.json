@@ -32,6 +32,22 @@
 				{
 					"name": "ConvertTimestamp",
 					"description": "Conver timestamp to datetime"
+				},
+				{
+					"name": "AddNewID",
+					"description": "Create a unique ID by concatenating location and corrected_timestamp"
+				},
+				{
+					"name": "TempDerive",
+					"description": "Derive multiple temperature values"
+				},
+				{
+					"name": "FixateCoordinates",
+					"description": "Assign fixed longitude and latitude values"
+				},
+				{
+					"name": "WeatherDataDerive",
+					"description": "Extract and convert the weather ID from a string to an integer.\n\nExtract specific weather details from strings."
 				}
 			],
 			"scriptLines": [
@@ -73,10 +89,20 @@
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> FlattenData",
-				"FlattenData derive(timestamp = iif(length(toString(timestamp)) > 10, toInteger(null()), timestamp)) ~> ConvertTime",
-				"AddLocation filter(isNull(timestamp) || isNull(humidity) || isNull(temp)) ~> FilterInvalidRows",
+				"FlattenData derive(corrected_timestamp = iif(length(toString(timestamp)) > 10, toInteger(null()), timestamp)) ~> ConvertTime",
+				"AddLocation filter(isNull(corrected_timestamp) || isNull(humidity) || isNull(temp)) ~> FilterInvalidRows",
 				"ConvertTime derive(location = \"Boston\") ~> AddLocation",
-				"FilterInvalidRows derive() ~> ConvertTimestamp"
+				"FilterInvalidRows derive(date_time = toTimestamp(toLong(corrected_timestamp) * 1000)",
+				") ~> ConvertTimestamp",
+				"ConvertTimestamp derive(id = concat(location, '_', toString(corrected_timestamp))) ~> AddNewID",
+				"AddNewID derive(temp = round(temp - 273.15, 0),",
+				"          temp_min_c = round(temp_min - 273.15, 0),",
+				"          temp_max_c = round(temp_max - 273.15, 0),",
+				"          feels_like_c = round(feels_like - 273.15, 0)) ~> TempDerive",
+				"TempDerive derive(lon = -71.0589,",
+				"          lat = 42.3601) ~> FixateCoordinates",
+				"FixateCoordinates derive(weather_id_value = toInteger(weather_id),",
+				"          weather_main_value = ERROR_FUNCTION('')) ~> WeatherDataDerive"
 			]
 		}
 	}
