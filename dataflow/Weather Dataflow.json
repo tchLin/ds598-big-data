@@ -80,7 +80,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine',",
-				"     wildcardPaths:['/weather_new/historical/*']) ~> weatherData",
+				"     wildcardPaths:['*']) ~> weatherData",
 				"FlattenData derive(corrected_timestamp = iif(length(toString(timestamp)) > 10, toInteger(null()), timestamp)) ~> ConvertTime",
 				"AddLocation filter(isNull(temp) || isNull(humidity) || isNull(timestamp)) ~> FilterInvalidRows",
 				"ConvertTime derive(location = \"Boston\") ~> AddLocation",
