@@ -334,6 +334,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"fileName": "*",
 						"folderPath": "bronze/weather_new/historical",
 						"fileSystem": "ds598blob"
 					}
