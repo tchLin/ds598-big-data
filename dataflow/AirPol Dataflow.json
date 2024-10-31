@@ -57,8 +57,8 @@
 			],
 			"scriptLines": [
 				"source(output(",
-				"          coord as (lon as double, lat as double),",
-				"          list as (main as (aqi as integer), components as (co as double, no as double, no2 as double, o3 as double, so2 as double, pm2_5 as double, pm10 as double, nh3 as double), dt as integer)[]",
+				"          coord as (lat as double, lon as double),",
+				"          list as (components as (co as double, nh3 as double, no as double, no2 as double, o3 as double, pm10 as double, pm2_5 as double, so2 as double), dt as integer, main as (aqi as short))[]",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
