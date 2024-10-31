@@ -19,7 +19,11 @@
 						"referenceName": "weather_data",
 						"type": "DatasetReference"
 					},
-					"name": "WeatherSink"
+					"name": "WeatherSink",
+					"rejectedDataLinkedService": {
+						"referenceName": "ds598_datalake",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [
