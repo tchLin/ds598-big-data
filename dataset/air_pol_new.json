@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "bronze/air_pol_new/historical",
+				"folderPath": "bronze/air-pol-new/historical",
 				"fileSystem": "ds598blob"
 			}
 		},
