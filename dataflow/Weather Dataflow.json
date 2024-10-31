@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "weather_new",
+						"referenceName": "weather_historical_bronze",
 						"type": "DatasetReference"
 					},
 					"name": "weatherData",
