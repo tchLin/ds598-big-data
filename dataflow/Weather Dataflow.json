@@ -149,6 +149,7 @@
 				"FilterColumns sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
+				"     partitionFileNames:['weather_processed'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
