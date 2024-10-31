@@ -16,7 +16,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "weather_data",
+						"referenceName": "weather_silver_data",
 						"type": "DatasetReference"
 					},
 					"name": "WeatherSink",

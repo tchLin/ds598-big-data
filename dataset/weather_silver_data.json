@@ -1,5 +1,5 @@
 {
-	"name": "weather_data",
+	"name": "weather_silver_data",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ds598_datalake",
