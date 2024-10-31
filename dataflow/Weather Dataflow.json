@@ -13,7 +13,15 @@
 					"description": "Bronze weather data"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "weather_data",
+						"type": "DatasetReference"
+					},
+					"name": "WeatherSink"
+				}
+			],
 			"transformations": [
 				{
 					"name": "FlattenData"
@@ -106,7 +114,8 @@
 				"TempDerive derive(lon = -71.0589,",
 				"          lat = 42.3601) ~> FixateCoordinates",
 				"FixateCoordinates derive(weather_id_value = toInteger(weather_id),",
-				"          weather_main_value = ERROR_FUNCTION('')) ~> WeatherDataDerive",
+				"          weather_main_value = weather_main,",
+				"          {} = ERROR_FUNCTION('')) ~> WeatherDataDerive",
 				"WeatherDataDerive select(mapColumn(",
 				"          clouds_all,",
 				"          feels_like_k = feels_like,",
@@ -131,7 +140,16 @@
 				"          weather_main_value",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> FilterColumns"
+				"     skipDuplicateMapOutputs: true) ~> FilterColumns",
+				"FilterColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> WeatherSink"
 			]
 		}
 	}

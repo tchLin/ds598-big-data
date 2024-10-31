@@ -1,0 +1,20 @@
+{
+	"name": "weather_data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ds598_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "silver",
+				"fileSystem": "ds598blob"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
