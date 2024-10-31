@@ -309,6 +309,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"fileName": "weather_data",
 						"folderPath": "silver",
 						"fileSystem": "ds598blob"
 					},
