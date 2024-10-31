@@ -616,7 +616,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/weather_silver_data')]",
+			"name": "[concat(parameters('factoryName'), '/weather_historical_bronze')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -625,16 +625,110 @@
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "Parquet",
+				"type": "Json",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "silver",
+						"folderPath": "bronze",
 						"fileSystem": "ds598blob"
-					},
-					"compressionCodec": "snappy"
+					}
 				},
-				"schema": []
+				"schema": {
+					"type": "object",
+					"properties": {
+						"message": {
+							"type": "string"
+						},
+						"cod": {
+							"type": "string"
+						},
+						"city_id": {
+							"type": "integer"
+						},
+						"calctime": {
+							"type": "number"
+						},
+						"cnt": {
+							"type": "integer"
+						},
+						"list": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"dt": {
+										"type": "integer"
+									},
+									"main": {
+										"type": "object",
+										"properties": {
+											"temp": {
+												"type": "number"
+											},
+											"feels_like": {
+												"type": "number"
+											},
+											"pressure": {
+												"type": "integer"
+											},
+											"humidity": {
+												"type": "integer"
+											},
+											"temp_min": {
+												"type": "number"
+											},
+											"temp_max": {
+												"type": "number"
+											}
+										}
+									},
+									"wind": {
+										"type": "object",
+										"properties": {
+											"speed": {
+												"type": "number"
+											},
+											"deg": {
+												"type": "integer"
+											},
+											"gust": {
+												"type": "number"
+											}
+										}
+									},
+									"clouds": {
+										"type": "object",
+										"properties": {
+											"all": {
+												"type": "integer"
+											}
+										}
+									},
+									"weather": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"main": {
+													"type": "string"
+												},
+												"description": {
+													"type": "string"
+												},
+												"icon": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ds598_datalake')]"
@@ -754,6 +848,31 @@
 						}
 					}
 				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ds598_datalake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/weather_silver_data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ds598_datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "silver",
+						"fileSystem": "ds598blob"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ds598_datalake')]"
@@ -925,18 +1044,18 @@
 					],
 					"scriptLines": [
 						"source(output(",
-						"          message as string,",
-						"          cod as string,",
-						"          city_id as integer,",
 						"          calctime as double,",
-						"          cnt as integer,",
-						"          list as (dt as integer, main as (temp as double, feels_like as double, pressure as integer, humidity as integer, temp_min as double, temp_max as double), wind as (speed as double, deg as integer, gust as double), clouds as (all as integer), weather as (id as integer, main as string, description as string, icon as string)[])[]",
+						"          city_id as boolean,",
+						"          cnt as short,",
+						"          cod as short,",
+						"          list as (clouds as (all as short), dt as integer, main as (feels_like as double, humidity as short, pressure as short, temp as double, temp_max as double, temp_min as double), rain as ({1h} as double), snow as ({1h} as double), weather as (description as string, icon as string, id as short, main as string)[], wind as (deg as short, gust as double, speed as double))[],",
+						"          message as string",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     documentForm: 'documentPerLine',",
-						"     wildcardPaths:['*.json']) ~> weatherData",
+						"     wildcardPaths:['bronze/weather-new/historical/*']) ~> weatherData",
 						"FlattenData derive(corrected_timestamp = iif(length(toString(timestamp)) > 10, toInteger(null()), timestamp)) ~> ConvertTime",
 						"AddLocation filter(isNull(temp) || isNull(humidity) || isNull(timestamp)) ~> FilterInvalidRows",
 						"ConvertTime derive(location = \"Boston\") ~> AddLocation",
@@ -1017,125 +1136,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/weather_historical_bronze')]",
 				"[concat(variables('factoryId'), '/datasets/weather_silver_data')]",
-				"[concat(variables('factoryId'), '/linkedServices/ds598_datalake')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/weather_historical_bronze')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ds598_datalake",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "bronze/weather_new/historical",
-						"fileSystem": "ds598blob"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"message": {
-							"type": "string"
-						},
-						"cod": {
-							"type": "string"
-						},
-						"city_id": {
-							"type": "integer"
-						},
-						"calctime": {
-							"type": "number"
-						},
-						"cnt": {
-							"type": "integer"
-						},
-						"list": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"properties": {
-									"dt": {
-										"type": "integer"
-									},
-									"main": {
-										"type": "object",
-										"properties": {
-											"temp": {
-												"type": "number"
-											},
-											"feels_like": {
-												"type": "number"
-											},
-											"pressure": {
-												"type": "integer"
-											},
-											"humidity": {
-												"type": "integer"
-											},
-											"temp_min": {
-												"type": "number"
-											},
-											"temp_max": {
-												"type": "number"
-											}
-										}
-									},
-									"wind": {
-										"type": "object",
-										"properties": {
-											"speed": {
-												"type": "number"
-											},
-											"deg": {
-												"type": "integer"
-											},
-											"gust": {
-												"type": "number"
-											}
-										}
-									},
-									"clouds": {
-										"type": "object",
-										"properties": {
-											"all": {
-												"type": "integer"
-											}
-										}
-									},
-									"weather": {
-										"type": "array",
-										"items": {
-											"type": "object",
-											"properties": {
-												"id": {
-													"type": "integer"
-												},
-												"main": {
-													"type": "string"
-												},
-												"description": {
-													"type": "string"
-												},
-												"icon": {
-													"type": "string"
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ds598_datalake')]"
 			]
 		}
