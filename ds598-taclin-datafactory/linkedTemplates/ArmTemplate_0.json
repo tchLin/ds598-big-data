@@ -829,7 +829,11 @@
 								"referenceName": "weather_data",
 								"type": "DatasetReference"
 							},
-							"name": "WeatherSink"
+							"name": "WeatherSink",
+							"rejectedDataLinkedService": {
+								"referenceName": "ds598_datalake",
+								"type": "LinkedServiceReference"
+							}
 						}
 					],
 					"transformations": [
@@ -966,7 +970,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/weather_new')]",
-				"[concat(variables('factoryId'), '/datasets/weather_data')]"
+				"[concat(variables('factoryId'), '/datasets/weather_data')]",
+				"[concat(variables('factoryId'), '/linkedServices/ds598_datalake')]"
 			]
 		},
 		{
