@@ -547,7 +547,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "weather_processed",
 						"folderPath": "silver",
 						"fileSystem": "ds598blob"
 					},
@@ -1079,6 +1078,7 @@
 						"FilterColumns sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
+						"     partitionFileNames:['weather_processed'],",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
